@@ -15,6 +15,10 @@ public class ComponentHandlingTests {
         public TestEntity(int identifier) : base(identifier) { }
     }
 
+    private class TestChildable : Component {
+        public TestChildable(int identifier, TestChildable tc, int test) : base(identifier) { }
+    }
+
     [Fact]
     public void TestCreateComponent() {
         var entity = new TestEntity(1);
@@ -24,6 +28,15 @@ public class ComponentHandlingTests {
         Assert.True(entity.HasComponent<TestComponent>());
     }
 
+    [Fact]
+    public void TestCreateComponentWithNullChildComponent() {
+        var entity = new TestEntity(1);
+        var component = ComponentFactory.CreateComponent<TestChildable>(entity, 1, null, 1);
+        Assert.NotNull(component);
+        Assert.Single(entity.GetAllComponents());
+        Assert.True(entity.HasComponent<TestChildable>());
+    }
+    
     [Fact]
     public void TestDuplicateComponent() {
         var entity = new TestEntity(1);
